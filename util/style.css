@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f5;
+    color: #263238;
+    padding: 30px 15px;
+}
+
+#app {
+    max-width: 850px;
+    margin: auto;
+}
+
+.header {
+    background: #164e3b;
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #d9eee3;
+}
+
+.form-section,
+.plant-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+h2 {
+    color: #164e3b;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input,
+textarea {
+    padding: 12px;
+    border: 1px solid #ccd5d0;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-family: inherit;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+button {
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+form button {
+    background: #198754;
+    color: white;
+}
+
+form button:hover {
+    background: #126b40;
+}
+
+.plant-card {
+    border: 1px solid #dce5df;
+    border-left: 5px solid #198754;
+    padding: 18px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.plant-info h3 {
+    color: #164e3b;
+    margin-bottom: 10px;
+}
+
+.plant-info p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.safe {
+    background: #d1e7dd;
+    color: #146c43;
+}
+
+.soon {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.due {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.water-btn {
+    background: #198754;
+    color: white;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.empty {
+    color: #777;
+    text-align: center;
+    padding: 25px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px 10px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .plant-card {
+        flex-direction: column;
+    }
+
+    .actions {
+        flex-direction: row;
+    }
+}

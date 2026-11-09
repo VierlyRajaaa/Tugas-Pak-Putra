@@ -1,0 +1,12 @@
+{
+    "name": "plant-care-scheduler",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "vite": "^6.0.0"
+    }
+}

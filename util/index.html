@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Care Scheduler</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            color-scheme: light;
+            --green-900: #173f32;
+            --green-700: #247451;
+            --green-600: #2f8a61;
+            --green-100: #e7f3eb;
+            --ink: #20352b;
+            --muted: #6d7f74;
+            --line: #e3ebe5;
+            --surface: #ffffff;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 48px 24px;
+            background:
+                radial-gradient(ellipse at 10% 0%, #e3f1e7 0, transparent 34rem),
+                #f5f7f4;
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+            gap: 22px;
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .container > header {
+            position: relative;
+            grid-column: 1 / -1;
+            overflow: hidden;
+            padding: 38px 42px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            background: linear-gradient(118deg, #173f32 0%, #1c6246 58%, #2f8a61 100%);
+            box-shadow: 0 18px 42px rgba(28, 79, 56, 0.15);
+            color: #fff;
+        }
+
+        .container > header::after {
+            position: absolute;
+            top: -105px;
+            right: -35px;
+            width: 310px;
+            height: 310px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 50%;
+            box-shadow: 0 0 0 34px rgba(255, 255, 255, 0.035), 0 0 0 70px rgba(255, 255, 255, 0.025);
+            content: "";
+            pointer-events: none;
+        }
+
+        header h1 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 9px;
+            font-size: clamp(1.8rem, 4vw, 2.45rem);
+            letter-spacing: -0.045em;
+        }
+
+        header p {
+            position: relative;
+            z-index: 1;
+            max-width: 530px;
+            color: #d7e9dd;
+            line-height: 1.65;
+        }
+
+        .card {
+            min-width: 0;
+            padding: 27px;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: 0 8px 26px rgba(28, 53, 38, 0.045);
+        }
+
+        h2 {
+            margin-bottom: 22px;
+            color: var(--green-900);
+            font-size: 1.2rem;
+            letter-spacing: -0.025em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        label {
+            margin-top: 5px;
+            color: #344a3d;
+            font-size: 0.82rem;
+            font-weight: 650;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #dce6de;
+            border-radius: 10px;
+            outline: none;
+            background: #fcfdfc;
+            color: var(--ink);
+            font: inherit;
+            font-size: 0.9rem;
+            transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--green-600);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(47, 138, 97, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            min-height: 43px;
+            padding: 11px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(47, 138, 97, 0.35);
+            outline-offset: 2px;
+        }
+
+        .add-btn {
+            margin-top: 8px;
+            background: var(--green-700);
+            box-shadow: 0 5px 12px rgba(36, 116, 81, 0.18);
+            color: #fff;
+        }
+
+        .add-btn:hover {
+            background: #1b6344;
+            box-shadow: 0 7px 16px rgba(36, 116, 81, 0.24);
+        }
+
+        .plant-item {
+            margin-bottom: 14px;
+            padding: 19px;
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--green-600);
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fff, #fcfefc);
+            transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+        }
+
+        .plant-item:hover {
+            transform: translateY(-2px);
+            border-color: #cbded0;
+            box-shadow: 0 9px 22px rgba(28, 53, 38, 0.07);
+        }
+
+        .plant-item h3 {
+            margin-bottom: 13px;
+            color: var(--green-900);
+            font-size: 1.08rem;
+        }
+
+        .plant-item p {
+            margin-bottom: 8px;
+            color: #526358;
+            font-size: 0.87rem;
+            line-height: 1.55;
+        }
+
+        .plant-item .next-watering {
+            margin: 12px 0 8px;
+            padding: 11px 13px;
+            border: 1px solid #dcebe0;
+            border-radius: 10px;
+            background: #f3f8f4;
+            color: var(--green-900);
+            font-weight: 650;
+        }
+
+        .plant-item .next-watering.overdue {
+            border-color: #f1d3cf;
+            background: #fff3f1;
+            color: #963c34;
+        }
+
+        .status {
+            display: inline-block;
+            margin: 5px 0 10px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 750;
+            letter-spacing: 0.01em;
+        }
+
+        .safe {
+            background: #e4f3e9;
+            color: #216442;
+        }
+
+        .soon {
+            background: #fff4d9;
+            color: #8a5a08;
+        }
+
+        .due {
+            background: #fde9e7;
+            color: #a63c34;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 7px;
+        }
+
+        .water-btn {
+            background: var(--green-700);
+            color: #fff;
+        }
+
+        .water-btn:hover {
+            background: #1b6344;
+        }
+
+        .delete-btn {
+            border: 1px solid #f0d7d4;
+            background: #fff;
+            color: #a63c34;
+        }
+
+        .delete-btn:hover {
+            background: #fff1ef;
+        }
+
+        .empty {
+            padding: 34px 18px;
+            border: 1px dashed #cbd9ce;
+            border-radius: 14px;
+            background: #f9fbf9;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 28px 16px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .container > header {
+                padding: 30px 26px;
+            }
+
+            .card {
+                padding: 23px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .container {
+                gap: 14px;
+            }
+
+            .container > header {
+                padding: 26px 21px;
+                border-radius: 18px;
+            }
+
+            .card {
+                padding: 19px;
+                border-radius: 16px;
+            }
+
+            .plant-item {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>🌱 Plant Care Scheduler</h1>
+        <p>Kelola tanaman dan jadwal penyiramanmu dengan mudah.</p>
+    </header>
+
+    <section class="card">
+
+        <h2>Tambah Tanaman</h2>
+
+        <form id="plantForm">
+
+            <label for="name">Nama Tanaman</label>
+            <input
+                type="text"
+                id="name"
+                placeholder="Contoh: Monstera"
+                required
+            >
+
+            <label for="interval">Interval Penyiraman (hari)</label>
+            <input
+                type="number"
+                id="interval"
+                min="1"
+                value="3"
+                required
+            >
+
+            <label for="lastWatered">Tanggal Terakhir Disiram</label>
+            <input
+                type="date"
+                id="lastWatered"
+            >
+
+            <label for="notes">Catatan</label>
+            <textarea
+                id="notes"
+                placeholder="Catatan tanaman..."
+            ></textarea>
+
+            <button class="add-btn" type="submit">
+                + Tambah Tanaman
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Daftar Tanaman</h2>
+
+        <div id="plantList" aria-live="polite"></div>
+
+    </section>
+
+</div>
+
+<script>
+    const form = document.getElementById("plantForm");
+    const plantList = document.getElementById("plantList");
+
+    let plants = [];
+
+    try {
+        const saved = JSON.parse(
+            localStorage.getItem("plantCareData") || "[]"
+        );
+
+        plants = Array.isArray(saved) ? saved.filter(plant =>
+            plant &&
+            typeof plant.name === "string" &&
+            typeof plant.waterInterval === "number"
+        ) : [];
+
+    } catch {
+        plants = [];
+    }
+
+    function saveData() {
+        localStorage.setItem(
+            "plantCareData",
+            JSON.stringify(plants)
+        );
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[char]);
+    }
+
+    function parseLocalDate(value) {
+        if (typeof value !== "string") return null;
+
+        const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+        if (!match) return null;
+
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+        const date = new Date(0);
+        date.setHours(0, 0, 0, 0);
+        date.setFullYear(year, month - 1, day);
+
+        if (
+            Number.isNaN(date.getTime()) ||
+            date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day
+        ) {
+            return null;
+        }
+
+        return date;
+    }
+
+    function getNextDate(lastWatered, interval) {
+        if (!Number.isInteger(interval) || interval <= 0) {
+            return null;
+        }
+
+        const date = parseLocalDate(lastWatered) || new Date();
+        date.setHours(0, 0, 0, 0);
+        date.setDate(date.getDate() + interval);
+
+        return date;
+    }
+
+    function getDaysUntil(nextDate) {
+        if (!nextDate || Number.isNaN(nextDate.getTime())) return null;
+        const today = new Date();
+        const todayNumber = Date.UTC(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+        const nextDateNumber = Date.UTC(
+            nextDate.getFullYear(),
+            nextDate.getMonth(),
+            nextDate.getDate()
+        );
+        return (nextDateNumber - todayNumber) / 86400000;
+    }
+
+    function getStatus(nextDate) {
+        const daysUntilWatering = getDaysUntil(nextDate);
+        if (daysUntilWatering === null) return "Perlu disiram";
+
+        if (daysUntilWatering <= 0) return "Perlu disiram";
+        if (daysUntilWatering <= 2) return "Segera disiram";
+
+        return "Aman";
+    }
+
+    function formatNextWatering(nextDate) {
+        const daysUntilWatering = getDaysUntil(nextDate);
+
+        if (daysUntilWatering === null) return "Belum tersedia";
+        if (daysUntilWatering === 0) return "Jadwal penyiraman: Hari ini";
+        if (daysUntilWatering < 0) {
+            return `Jadwal terlewat — siram sekarang (jadwal: ${formatDate(nextDate)})`;
+        }
+
+        return `Jadwal penyiraman: ${formatDate(nextDate)}`;
+    }
+
+    function formatDate(date) {
+        if (!date) return "Belum tersedia";
+
+        const parsedDate = date instanceof Date ? date : parseLocalDate(date);
+
+        if (!parsedDate || Number.isNaN(parsedDate.getTime())) {
+            return "Belum tersedia";
+        }
+
+        return parsedDate.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+    }
+
+    function renderPlants() {
+        if (plants.length === 0) {
+            plantList.innerHTML = `
+                <p class="empty">
+                    Belum ada tanaman. Silakan tambahkan tanaman.
+                </p>
+            `;
+            return;
+        }
+
+        plantList.innerHTML = plants.map(plant => {
+
+            const nextDate = getNextDate(
+                plant.lastWatered,
+                plant.waterInterval
+            );
+
+            const status = getStatus(nextDate);
+            const daysUntilWatering = getDaysUntil(nextDate);
+            const wateringClass =
+                daysUntilWatering !== null && daysUntilWatering < 0
+                    ? " overdue"
+                    : "";
+
+            let statusClass = "safe";
+
+            if (status === "Segera disiram") {
+                statusClass = "soon";
+            }
+
+            if (status === "Perlu disiram") {
+                statusClass = "due";
+            }
+
+            return `
+                <div class="plant-item">
+
+                    <h3>🪴 ${escapeHTML(plant.name)}</h3>
+
+                    <p>
+                        Interval:
+                        ${plant.waterInterval} hari
+                    </p>
+
+                    <p>
+                        Terakhir disiram:
+                        ${plant.lastWatered ? formatDate(parseLocalDate(plant.lastWatered)) : "Belum pernah"}
+                    </p>
+
+                    <p class="next-watering${wateringClass}">
+                        ${formatNextWatering(nextDate)}
+                    </p>
+
+                    <p>
+                        Catatan:
+                        ${escapeHTML(plant.notes || "-")}
+                    </p>
+
+                    <span class="status ${statusClass}">
+                        ${status}
+                    </span>
+
+                    <div class="actions">
+
+                        <button
+                            class="water-btn"
+                            onclick="waterPlant(${plant.id})"
+                        >
+                            Sudah Disiram
+                        </button>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deletePlant(${plant.id})"
+                        >
+                            Hapus
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+        }).join("");
+    }
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+
+        const interval = Number(
+            document.getElementById("interval").value
+        );
+
+        const lastWatered =
+            document.getElementById("lastWatered").value || null;
+
+        const notes =
+            document.getElementById("notes").value.trim();
+
+        if (!name || !Number.isInteger(interval) || interval <= 0) {
+            alert("Masukkan data tanaman dengan benar!");
+            return;
+        }
+
+        plants.push({
+            id: Date.now(),
+            name: name,
+            waterInterval: interval,
+            lastWatered: lastWatered,
+            notes: notes
+        });
+
+        saveData();
+        renderPlants();
+
+        form.reset();
+
+        document.getElementById("interval").value = 3;
+    });
+
+    function waterPlant(id) {
+        const plant = plants.find(item => item.id === id);
+
+        if (!plant) return;
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+
+        plant.lastWatered = `${year}-${month}-${day}`;
+
+        saveData();
+        renderPlants();
+    }
+
+    function deletePlant(id) {
+        if (!confirm("Yakin ingin menghapus tanaman ini?")) {
+            return;
+        }
+
+        plants = plants.filter(item => item.id !== id);
+
+        saveData();
+        renderPlants();
+    }
+
+    renderPlants();
+</script>
+
+</body>
+</html>
